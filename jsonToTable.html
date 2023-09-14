@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <script>
+    window.onload = () => {
+      document.getElementById("jsonInput").addEventListener("input", () => {
+        appendTable();
+      });
+      parseJsonFile = async (file) => {
+        return new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
+          fileReader.onload = (event) =>
+            resolve(JSON.parse(event.target.result));
+          fileReader.onerror = (error) => reject(error);
+          fileReader.readAsText(file);
+        });
+      };
+
+      const appendTable = async () => {
+        const data = await parseJsonFile(
+          document.getElementById("jsonInput").files[0]
+        );
+        let tableHTML = "";
+        data.forEach((row) => {
+          tableHTML += "<tr>";
+          Object.values(row).forEach((cell) => {
+            tableHTML += "<td>" + cell + "</td>";
+          });
+          tableHTML += "</tr>";
+          document.getElementById("forTable").innerHTML =
+            "<table>" + tableHTML + "</table>";
+        });
+      };
+    };
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jsonToTable</title>
+  </head>
+  <body>
+    <input id="jsonInput" accept=".json" type="file" />
+    <div id="forTable"></div>
+  </body>
+</html>
